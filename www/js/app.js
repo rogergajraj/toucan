@@ -67,7 +67,16 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         controller: 'PlaylistCtrl'
       }
     }
-  });
+  })
+  .state('app.onboarding', {
+            url: '/onboarding',
+            views: {
+                'menuContent': {
+                    templateUrl: 'templates/onboarding.html',
+                    controller: 'onboardingCtrl'
+                }
+            }
+        });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/playlists');
+  $urlRouterProvider.otherwise('/app/onboarding');
 });

@@ -1,1 +1,50 @@
 /* Empty. Add your own CSS if you like */
+.slide{
+    padding-top: 80px;
+    text-align: center;
+    color: white;
+}
+
+#s1{
+    background-image: url('../img/pplbar.jpg');
+    background-size: cover;
+}
+
+#s2{
+    background-image: url('../img/hh.jpg');
+    background-size: cover;
+}
+
+#s2 h2 {
+    color:white;
+    text-shadow: 0px 0px 5px black;
+}
+
+#s3{
+    background-image: url('../img/map.jpg');
+    background-size: cover;
+}
+
+#s3 h2 {
+    color:black;
+    
+}
+
+#s4{
+    background-image: url('../img/try.jpg');
+    background-size: cover;
+}
+
+#s4 h2 {
+    color: white;
+    text-shadow: 0px 0px 5px black;
+}
+
+.pull-bottom {
+    position: absolute;
+    bottom: 10%;
+}
+
+#welcome-msg{
+    font-size: 18px;
+}

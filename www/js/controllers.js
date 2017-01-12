@@ -53,4 +53,8 @@ angular.module('starter.controllers', [])
 })
 
 .controller('PlaylistCtrl', function($scope, $stateParams) {
-});
+})
+.controller('onboardingCtrl', ['$ionicPlatform', '$scope', '$http', '$window', '$ionicSlideBoxDelegate', '$ionicSideMenuDelegate', function ($ionicPlatform, $scope, $http, $window, $ionicSlideBoxDelegate, $ionicSideMenuDelegate) {
+    console.log("slide controller started load");
+    $ionicSideMenuDelegate.canDragContent(false); //disables menu
+}]);

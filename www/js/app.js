@@ -21,7 +21,9 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     }
   });
 })
-
+.config(function($ionicConfigProvider) {
+  $ionicConfigProvider.tabs.position('bottom');
+})
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
@@ -68,15 +70,36 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     }
   })
-  .state('app.onboarding', {
+  .state('onboarding', {
             url: '/onboarding',
-            views: {
-                'menuContent': {
-                    templateUrl: 'templates/onboarding.html',
-                    controller: 'onboardingCtrl'
-                }
-            }
-        });
+            templateUrl: 'templates/onboarding.html',
+            controller: 'onboardingCtrl'
+
+        })
+
+  .state('app.tabs', {
+    url: "/hometabs",
+    abstract: true,
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/hometabs.html',
+        controller: 'TabsHomeCtrl'
+      }
+    }
+    //templateUrl: "templates/hometabs.html"
+  })
+  .state('app.tabs.deals', {
+    url: "/deals",
+    views: {
+      'home-tab': {
+        templateUrl: "templates/deals.html",
+        controller: 'DealsTabCtrl'
+      }
+    }
+  })
+
+
+        ;
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/onboarding');
+  $urlRouterProvider.otherwise('/onboarding');
 });

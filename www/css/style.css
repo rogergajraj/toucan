@@ -27,7 +27,7 @@
 
 #s3 h2 {
     color:black;
-    
+
 }
 
 #s4{
@@ -47,4 +47,43 @@
 
 #welcome-msg{
     font-size: 18px;
+}
+
+
+/*header bar*/
+[nav-bar-transition="android"] [nav-bar="active"] .bar, [nav-bar-transition="android"] [nav-bar="entering"] .bar {
+    background-color: black;
+    background-image: url('../img/green.png');
+    background-repeat: repeat-y;;
+}
+
+
+/*tabs*/
+.tab{
+  padding: 10px;
+  padding-top: 10%;
+  text-align: center;
+}
+
+.tabs-striped.tabs-positive .tabs {
+    background-color: black;
+    border-bottom: none;
+}
+
+.tabs-striped.tabs-positive .tab-item.tab-item-active, .tabs-striped.tabs-positive .tab-item.active, .tabs-striped.tabs-positive .tab-item.activated {
+
+    border-color: #96d01f;
+}
+
+/*checkin in tab*/
+.coupon {
+    border: 2px dotted #375abd;
+    background-color: rgb(255, 255, 255);
+    padding: 10px;
+    box-shadow: 0px 0px 0px 5px #ffffff, inset 0px 48px 0px -4px #6eb51c;
+}
+
+.coupon h3 {
+  color:white;
+  font-weight: bolder;
 }

@@ -53,17 +53,15 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('onboardingCtrl', ['$ionicPlatform', '$scope', '$state', '$http', '$window', '$ionicSlideBoxDelegate', '$ionicSideMenuDelegate', '$ionicHistory', function ($ionicPlatform, $scope, $state, $http, $window, $ionicSlideBoxDelegate, $ionicSideMenuDelegate, $ionicHistory) {
+.controller('onboardingCtrl', ['$ionicPlatform', '$scope', '$rootScope', '$state', '$http', '$window', '$ionicSlideBoxDelegate', '$ionicSideMenuDelegate', '$ionicHistory', function ($ionicPlatform, $scope, $rootScope, $state, $http, $window, $ionicSlideBoxDelegate, $ionicSideMenuDelegate, $ionicHistory) {
     console.log("slide controller started load");
     $ionicSideMenuDelegate.canDragContent(false); //disables menu
 
     //This method is executed when the user press the "Login with facebook" button
     $scope.facebookSignIn = function () {
 
-        $state.go('app.tabs.deals');
-        $ionicHistory.clearCache();
-        $ionicHistory.clearHistory();
-        return;
+
+
 
 
         facebookConnectPlugin.getLoginStatus(function (success) {
@@ -106,7 +104,8 @@ angular.module('starter.controllers', [])
                 //$state.go('app.playlists');
                 $ionicSideMenuDelegate.canDragContent(true); //enables menu
 
-                $state.go('app.playlists');
+                $state.go('app.tabs.deals');
+                $ionicHistory.clearCache();
                 $ionicHistory.clearHistory();
             } else {
                 // If (success.status === 'not_authorized') the user is logged in to Facebook,
@@ -170,39 +169,89 @@ angular.module('starter.controllers', [])
 })
 .controller('DealsTabCtrl', function($scope, $stateParams) {
 })
-.controller('CheckinTabCtrl', function($scope, $stateParams) {
-  $scope.status = "looking to see if you're here";
-  function successCallback(beacon)
-{
-   $scope.status = 'Jippie, found a beacon: ' + beacon.name;
-   $scope.$apply();
-   if (beacon.url)
-       console.log('  url: ' + beacon.url)
-}
+.controller('CheckinTabCtrl', function($scope, $stateParams, $rootScope) {
 
-function errorCallback(error)
-{
-    $scope.status = 'Darn, something went wrong: ' + error;
-}
 
-try {
-  evothings.eddystone.startScan(successCallback, errorCallback);
-} catch (e) {
-  console.log('beacon cannot run scan on web')
-}
+  //set the checkin discount coupon to hidden
+  $scope.checked_in = false;
 
-$scope.$on('$ionicView.leave', function (e, data) {
-  //console.log('fromState', data);
 
-  if (data.stateName == 'app.tabs.checkin'){
-    try {
-      evothings.eddystone.stopScan();
-    } catch (e) {
-      console.log('beacon cannot stop scan on web')
-    }
+  //posts checkin image to facebook
+  $scope.postCheckin = function(){
+
+    facebookConnectPlugin.showDialog(
+    {
+        method: "feed",
+        picture:'https://www.google.co.jp/logos/doodles/2014/doodle-4-google-2014-japan-winner-5109465267306496.2-hp.png',
+        name:'Woodford Cafe',
+        //message:'First photo post',
+        caption: 'Having a great time at Woodford Cafe',
+        description: 'I love this place!'
+    },
+    function (response) {
+      //give coupon
+    },
+    function (response) {
+      if ( response.errorCode == "4201" )
+      {
+        alert("Sorry, you have to post to facebook in order to receive discount coupon");
+      }
+     });
+
   }
 
-});
+  function successCallback(beacon)
+  {
+     $scope.status = 'Jippie, found a beacon: ' + beacon.name;
+     $scope.$apply();
+
+     $scope.checked_in = true;
+
+  }
+
+
+  function errorCallback(error)
+  {
+      $scope.status = 'Darn, something went wrong: ' + error;
+  }
+
+
+
+  //start scanning for beacon when entering checkin view
+  $scope.$on('$ionicView.enter', function (e, data) {
+
+    //set the checkin discount coupon to hidden
+    $scope.checked_in = false;
+
+    //set notification to searching
+    $scope.status = "looking to see if you're currently at Woodford Cafe..";
+
+    setTimeout(function(){
+      try {
+        evothings.eddystone.startScan(successCallback, errorCallback);
+      } catch (e) {
+        console.log('beacon cannot run scan on web')
+      }
+
+    }, 2000);
+
+  });
+
+  //stop scanning for beacon after leaving checkin view
+  $scope.$on('$ionicView.leave', function (e, data) {
+    //console.log('fromState', data);
+
+    if (data.stateName == 'app.tabs.checkin'){
+      try {
+        evothings.eddystone.stopScan();
+      } catch (e) {
+        console.log('beacon cannot stop scan on web');
+
+      }
+    }
+
+
+  });
 
 
 });

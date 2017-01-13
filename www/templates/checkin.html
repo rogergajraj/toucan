@@ -1,6 +1,14 @@
 <ion-view view-title="Check-in">
-  <ion-content>
-    <h1>Check in </h1>
-    <p>{{status}}</p>
+  <ion-content class="tab" style="background-image: url(img/here.jpg); background-size:cover; background-position-x: center;">
+
+    <h2 style="color:white;text-shadow: 0px 0px 5px black;">Are you here?</h2>
+    <p style="color:white;">{{status}}</p>
+    <div class="coupon" ng-show="checked_in">
+      <h3>5% Off</h3>
+      <p>Get 5% off your bill when you post your checkin to Facebook.</p>
+      <button class="button button-positive" ng-click="postCheckin()">
+          Checkin with Facebook
+      </button>
+    </div>
   </ion-content>
 </ion-view>

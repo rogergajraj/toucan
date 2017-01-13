@@ -166,7 +166,43 @@ angular.module('starter.controllers', [])
 
 }])
 .controller('TabsHomeCtrl', function($scope, $stateParams) {
-  
+
 })
 .controller('DealsTabCtrl', function($scope, $stateParams) {
+})
+.controller('CheckinTabCtrl', function($scope, $stateParams) {
+  $scope.status = "looking to see if you're here";
+  function successCallback(beacon)
+{
+   $scope.status = 'Jippie, found a beacon: ' + beacon.name;
+   $scope.$apply();
+   if (beacon.url)
+       console.log('  url: ' + beacon.url)
+}
+
+function errorCallback(error)
+{
+    $scope.status = 'Darn, something went wrong: ' + error;
+}
+
+try {
+  evothings.eddystone.startScan(successCallback, errorCallback);
+} catch (e) {
+  console.log('beacon cannot run scan on web')
+}
+
+$scope.$on('$ionicView.leave', function (e, data) {
+  //console.log('fromState', data);
+
+  if (data.stateName == 'app.tabs.checkin'){
+    try {
+      evothings.eddystone.stopScan();
+    } catch (e) {
+      console.log('beacon cannot stop scan on web')
+    }
+  }
+
+});
+
+
 });

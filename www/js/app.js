@@ -91,9 +91,18 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   .state('app.tabs.deals', {
     url: "/deals",
     views: {
-      'home-tab': {
+      'deals-tab': {
         templateUrl: "templates/deals.html",
         controller: 'DealsTabCtrl'
+      }
+    }
+  })
+  .state('app.tabs.checkin', {
+    url: "/checkin",
+    views: {
+      'checkin-tab': {
+        templateUrl: "templates/checkin.html",
+        controller: 'CheckinTabCtrl'
       }
     }
   })

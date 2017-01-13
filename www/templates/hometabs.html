@@ -1,15 +1,19 @@
 <ion-tabs class="tabs-icon-top tabs-positive">
 
-  <ion-tab title="Deals" icon="ion-beer" href="#/tab/deals">
-    <ion-nav-view name="home-tab"></ion-nav-view>
+  <ion-tab title="Deals" icon="ion-wineglass" ui-sref="app.tabs.deals">
+    <ion-nav-view name="deals-tab"></ion-nav-view>
   </ion-tab>
 
-  <ion-tab title="Check-in" icon="ion-ios-location" href="#/tab/about">
-    <ion-nav-view name="about-tab"></ion-nav-view>
+  <ion-tab title="Check-in" icon="ion-ios-location" ui-sref="app.tabs.checkin">
+    <ion-nav-view name="checkin-tab"></ion-nav-view>
   </ion-tab>
 
-  <ion-tab title="Rewards" icon="ion-star" ui-sref="tabs.contact">
-    <ion-nav-view name="contact-tab"></ion-nav-view>
+  <ion-tab title="Menu" icon="ion-ios-list" ui-sref="app.tabs.menu">
+    <ion-nav-view name="menu-tab"></ion-nav-view>
+  </ion-tab>
+
+  <ion-tab title="Rewards" icon="ion-star" ui-sref="app.tabs.rewards">
+    <ion-nav-view name="rewards-tab"></ion-nav-view>
   </ion-tab>
 
 </ion-tabs>

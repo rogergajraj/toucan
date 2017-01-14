@@ -6,19 +6,42 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $cordovaSQLite) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
-    if (window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      cordova.plugins.Keyboard.disableScroll(true);
 
+    try{
+      if (window.cordova && window.cordova.plugins.Keyboard) {
+        cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+        cordova.plugins.Keyboard.disableScroll(true);
+
+      }
+
+    }catch(err){
+      console.log('error with keyboard init cordova');
     }
+
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    //open database and create inital table
+    db = $cordovaSQLite.openDB({
+        name: "woodford.db",
+        location: 'default'
+    });
+
+    //table for rewards
+    $cordovaSQLite.execute(db, 'CREATE TABLE IF NOT EXISTS rewards (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, title TEXT, details TEXT, expiry TEXT)').then(
+    function s(res) {
+        console.log("created rewards table", res);
+    },
+    function e(res) {
+        console.log("error creating rewards table", res);
+    });
+
   });
 })
 .config(function($ionicConfigProvider) {
@@ -106,9 +129,15 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
       }
     }
   })
-
-
-        ;
+  .state('app.tabs.rewards', {
+    url: "/rewards",
+    views: {
+      'rewards-tab': {
+        templateUrl: "templates/rewards.html",
+        controller: 'RewardsTabCtrl'
+      }
+    }
+  });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/onboarding');
 });

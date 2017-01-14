@@ -64,7 +64,7 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('onboardingCtrl', ['$q', '$ionicPlatform', '$scope', '$rootScope', '$state', '$http', '$window', '$ionicSlideBoxDelegate', '$ionicSideMenuDelegate', '$ionicHistory', function($q, $ionicPlatform, $scope, $rootScope, $state, $http, $window, $ionicSlideBoxDelegate, $ionicSideMenuDelegate, $ionicHistory) {
+.controller('onboardingCtrl', ['$q', '$ionicPlatform', '$scope', '$rootScope', '$cordovaSQLite', '$state', '$http', '$window', '$ionicSlideBoxDelegate', '$ionicSideMenuDelegate', '$ionicHistory', function($q, $ionicPlatform, $scope, $rootScope, $cordovaSQLite, $state, $http, $window, $ionicSlideBoxDelegate, $ionicSideMenuDelegate, $ionicHistory) {
     console.log("slide controller started load");
     $ionicSideMenuDelegate.canDragContent(false); //disables menu
 
@@ -215,7 +215,32 @@ angular.module('starter.controllers', [])
 
   })
   .controller('DealsTabCtrl', function($scope, $stateParams) {})
-  .controller('CheckinTabCtrl', function($scope, $stateParams, $rootScope) {
+  .controller('RewardsTabCtrl', function($scope, $stateParams, $cordovaSQLite) {
+
+    $scope.rewards = [];
+
+    $scope.$on('$ionicView.enter', function(e, data) {
+
+      $cordovaSQLite.execute(db, 'select * from rewards ORDER BY id DESC ').then(
+
+        function s(res) {
+          for (var i = 0; i < res.rows.length; i++) {
+            $scope.rewards.push(res.rows.item(i));
+
+          }
+
+          $scope.apply();
+
+        },
+        function e(err) {
+          console.log('error reading rewards from db')
+        });
+
+    });
+
+
+  })
+  .controller('CheckinTabCtrl', function($scope, $stateParams, $rootScope, $cordovaSQLite) {
 
 
     //set the checkin discount coupon to hidden
@@ -234,7 +259,18 @@ angular.module('starter.controllers', [])
           description: 'I love this place!'
         },
         function(response) {
-          //give coupon
+          /*give coupon*/
+          //set expiry date
+          var expiry = new Date();
+          expiry.setHours(expiry.getHours() + 5);
+          //save to mobile db
+          $cordovaSQLite.execute(db, "INSERT into rewards (type, title, details, expiry) VALUES (?,?,?,?)", ['coupon', '5% off bill', 'present this coupon to waiter before you pay bill', expiry.toString()]).then(
+            function s(res) {
+              alert("check your rewards to get coupon");
+            },
+            function e(res) {
+              alert("error setting award in db", res);
+            });
         },
         function(response) {
           if (response.errorCode == "4201") {

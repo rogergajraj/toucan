@@ -1,0 +1,20 @@
+<ion-view view-title="Rewards">
+  <ion-content class="tab" style="text-align:left;">
+    <div class="list">
+
+      <div class="card" ng-repeat="r in rewards">
+        <div class="item item-divider">
+          {{r.title}}
+        </div>
+        <div class="item item-text-wrap item-icon-left">
+          <i class="icon"><img src="img/coupon.png" style="width:50%;"/></i>
+          {{r.details}}
+        </div>
+        <div class="item item-divider">
+          expires on: {{r.expiry}}
+        </div>
+      </div>
+
+    </div>
+  </ion-content>
+</ion-view>

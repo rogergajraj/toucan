@@ -137,6 +137,15 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
         controller: 'RewardsTabCtrl'
       }
     }
+  })
+  .state('app.tabs.menu-food', {
+    url: "/menu-food",
+    views: {
+      'menu-food-tab': {
+        templateUrl: "templates/menu-food.html",
+        controller: 'MenuFoodTabCtrl'
+      }
+    }
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/onboarding');

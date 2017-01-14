@@ -214,6 +214,9 @@ angular.module('starter.controllers', [])
   .controller('TabsHomeCtrl', function($scope, $stateParams) {
 
   })
+  .controller('MenuFoodTabCtrl', function($scope, $stateParams) {
+
+  })
   .controller('DealsTabCtrl', function($scope, $stateParams) {})
   .controller('RewardsTabCtrl', function($scope, $stateParams, $cordovaSQLite) {
 

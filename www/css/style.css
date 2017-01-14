@@ -87,3 +87,24 @@
   color:white;
   font-weight: bolder;
 }
+
+/*menu-food styling*/
+#m1{
+    background-image: url('../img/m1.png');
+    background-size: cover;
+}
+
+#m2{
+    background-image: url('../img/m2.png');
+    background-size: cover;
+}
+
+#m3{
+    background-image: url('../img/m3.png');
+    background-size: cover;
+}
+
+#m4{
+    background-image: url('../img/m4.png');
+    background-size: cover;
+}

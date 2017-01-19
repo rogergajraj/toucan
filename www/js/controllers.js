@@ -83,7 +83,7 @@ angular.module('starter.controllers', [])
           //log who logged in and send data to cloud
           getFacebookProfileInfo(success.authResponse)
             .then(function(profileInfo) {
-              // For the purpose of this example I will store user data on local storage
+
               $http.post("http://www.guyanago.com/woodford/services/api.php", {
                 action: 'checkin',
                 customer: JSON.stringify(profileInfo)
@@ -94,44 +94,7 @@ angular.module('starter.controllers', [])
 
             });
 
-          /*
-                      }
-                            userID: profileInfo.id,
-                            name: profileInfo.name,
-                            email: profileInfo.email,
-                            picture: "http://graph.facebook.com/" + success.authResponse.userID + "/picture?type=large"
-                        });
-*
-
-
-                // Check if we have our user saved
-                //var user = UserService.getUser('facebook');
-
-                /*
-                if (!user.userID) {
-                    getFacebookProfileInfo(success.authResponse)
-                        .then(function (profileInfo) {
-                            // For the purpose of this example I will store user data on local storage
-                            UserService.setUser({
-                                authResponse: success.authResponse,
-                                userID: profileInfo.id,
-                                name: profileInfo.name,
-                                email: profileInfo.email,
-                                picture: "http://graph.facebook.com/" + success.authResponse.userID + "/picture?type=large"
-                            });
-
-                            $state.go('app.home');
-                        }, function (fail) {
-                            // Fail get profile info
-                            console.log('profile info fail', fail);
-                        });
-                } else {
-                    $state.go('app.home');
-                }
-                */
-
-
-          //$state.go('app.playlists');
+          //enter app
           $ionicSideMenuDelegate.canDragContent(true); //enables menu
 
           $state.go('app.tabs.deals');
@@ -151,7 +114,7 @@ angular.module('starter.controllers', [])
 
           // Ask the permissions you need. You can learn more about
           // FB permissions here: https://developers.facebook.com/docs/facebook-login/permissions/v2.4
-          facebookConnectPlugin.login(['email', 'public_profile', 'user_birthday'], fbLoginSuccess, fbLoginError);
+          facebookConnectPlugin.login(['email', 'public_profile'], fbLoginSuccess, fbLoginError);
         }
       });
     };
@@ -165,25 +128,25 @@ angular.module('starter.controllers', [])
       var authResponse = response.authResponse;
       console.log("Auth response: " + authResponse);
 
-      /*
-    getFacebookProfileInfo(authResponse)
-    .then(function(profileInfo) {
-      // For the purpose of this example I will store user data on local storage
-      UserService.setUser({
-        authResponse: authResponse,
-				userID: profileInfo.id,
-				name: profileInfo.name,
-				email: profileInfo.email,
-        picture : "http://graph.facebook.com/" + authResponse.userID + "/picture?type=large"
-      });
-      $ionicLoading.hide();
-      $state.go('app.home');
-    }, function(fail){
-      // Fail get profile info
-      console.log('profile info fail', fail);
-    });
+      //log who logged in and send data to cloud
+      getFacebookProfileInfo(authResponse)
+        .then(function(profileInfo) {
 
-    */
+          $http.post("http://www.guyanago.com/woodford/services/api.php", {
+            action: 'checkin',
+            customer: JSON.stringify(profileInfo)
+          }).
+          then(function(res) {
+            console.log(res.data);
+          });
+
+        });
+
+      $ionicSideMenuDelegate.canDragContent(true); //enables menu
+
+      $state.go('app.tabs.deals');
+      $ionicHistory.clearCache();
+      $ionicHistory.clearHistory();
     };
 
     // This is the fail callback from the login method
@@ -224,6 +187,8 @@ angular.module('starter.controllers', [])
 
     $scope.$on('$ionicView.enter', function(e, data) {
 
+      $scope.rewards = []; //reset
+
       $cordovaSQLite.execute(db, 'select * from rewards ORDER BY id DESC ').then(
 
         function s(res) {
@@ -255,7 +220,7 @@ angular.module('starter.controllers', [])
 
       facebookConnectPlugin.showDialog({
           method: "feed",
-          picture: 'https://www.google.co.jp/logos/doodles/2014/doodle-4-google-2014-japan-winner-5109465267306496.2-hp.png',
+          picture: 'http://www.guyanago.com/woodford/services/images/checkin.png',
           name: 'Woodford Cafe',
           //message:'First photo post',
           caption: 'Having a great time at Woodford Cafe',
@@ -270,6 +235,15 @@ angular.module('starter.controllers', [])
           $cordovaSQLite.execute(db, "INSERT into rewards (type, title, details, expiry) VALUES (?,?,?,?)", ['coupon', '5% off bill', 'present this coupon to waiter before you pay bill', expiry.toString()]).then(
             function s(res) {
               alert("check your rewards to get coupon");
+
+              try {
+                evothings.eddystone.stopScan();
+                $scope.checked_in = false;
+              } catch (e) {
+                console.log('beacon cannot stop scan on web');
+
+              }
+
             },
             function e(res) {
               alert("error setting award in db", res);
@@ -284,7 +258,9 @@ angular.module('starter.controllers', [])
     }
 
     function successCallback(beacon) {
-      $scope.status = 'Jippie, found a beacon: ' + beacon.name;
+      $scope.header = "You're here!";
+      $scope.status = "we found you! You're in Woodford Cafe";
+      //$scope.status = 'Jippie, found a beacon: ' + beacon.name;
       $scope.$apply();
 
       $scope.checked_in = true;
@@ -305,7 +281,8 @@ angular.module('starter.controllers', [])
       $scope.checked_in = false;
 
       //set notification to searching
-      $scope.status = "looking to see if you're currently at Woodford Cafe..";
+      $scope.header = "Are you here?";
+      $scope.status = "searching to see if you're currently at Woodford Cafe..";
 
       setTimeout(function() {
         try {
@@ -314,7 +291,7 @@ angular.module('starter.controllers', [])
           console.log('beacon cannot run scan on web')
         }
 
-      }, 2000);
+      }, 4000);
 
     });
 

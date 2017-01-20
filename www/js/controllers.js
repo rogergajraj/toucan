@@ -181,6 +181,120 @@ angular.module('starter.controllers', [])
 
   })
   .controller('DealsTabCtrl', function($scope, $stateParams) {})
+  .controller('InitCtrl', function($q, $scope, $stateParams, $state, $ionicPlatform) {
+
+    $ionicPlatform.ready(function() {
+      console.log('rg: ready');
+      $scope.facebookSignIn();
+    });
+
+    $scope.facebookSignIn = function() {
+
+      facebookConnectPlugin.getLoginStatus(function(success) {
+
+
+        if (success.status === 'connected') {
+          // The user is logged in and has authenticated your app, and response.authResponse supplies
+          // the user's ID, a valid access token, a signed request, and the time the access token
+          // and signed request each expire
+          console.log('FB--getLoginStatus', success.status);
+
+          //log who logged in and send data to cloud
+          getFacebookProfileInfo(success.authResponse)
+            .then(function(profileInfo) {
+
+              $http.post("http://www.guyanago.com/woodford/services/api.php", {
+                action: 'checkin',
+                customer: JSON.stringify(profileInfo)
+              }).
+              then(function(res) {
+                console.log(res.data);
+              });
+
+            });
+
+          //enter app
+          //$ionicSideMenuDelegate.canDragContent(true); //enables menu
+
+          $state.go('app.tabs.deals');
+          $ionicHistory.clearCache();
+          $ionicHistory.clearHistory();
+        } else {
+          // If (success.status === 'not_authorized') the user is logged in to Facebook,
+          // but has not authenticated your app
+          // Else the person is not logged into Facebook,
+          // so we're not sure if they are logged into this app or not.
+
+          console.log('getLoginStatus', success.status);
+          $state.go('onboarding');
+          return;
+          //$ionicLoading.show({
+          //  template: 'Logging in...'
+          //});
+
+          // Ask the permissions you need. You can learn more about
+          // FB permissions here: https://developers.facebook.com/docs/facebook-login/permissions/v2.4
+          facebookConnectPlugin.login(['email', 'public_profile'], fbLoginSuccess, fbLoginError);
+        }
+      });
+    };
+
+    var fbLoginSuccess = function(response) {
+      if (!response.authResponse) {
+        fbLoginError("Cannot find the authResponse");
+        return;
+      }
+
+      var authResponse = response.authResponse;
+      console.log("Auth response: " + authResponse);
+
+      //log who logged in and send data to cloud
+      getFacebookProfileInfo(authResponse)
+        .then(function(profileInfo) {
+
+          $http.post("http://www.guyanago.com/woodford/services/api.php", {
+            action: 'checkin',
+            customer: JSON.stringify(profileInfo)
+          }).
+          then(function(res) {
+            console.log(res.data);
+          });
+
+        });
+
+      //$ionicSideMenuDelegate.canDragContent(true); //enables menu
+
+      $state.go('app.tabs.deals');
+      $ionicHistory.clearCache();
+      $ionicHistory.clearHistory();
+    };
+
+    // This is the fail callback from the login method
+    var fbLoginError = function(error) {
+      console.log('fbLoginError', error);
+      //$ionicLoading.hide();
+    };
+
+    // This method is to get the user profile info from the facebook api
+    var getFacebookProfileInfo = function(authResponse) {
+      var info = $q.defer();
+
+      facebookConnectPlugin.api('/me?fields=id,first_name,last_name,email,gender&access_token=' + authResponse.accessToken, null,
+        function(response) {
+          console.log(response);
+          info.resolve(response);
+        },
+        function(response) {
+          console.log(response);
+          info.reject(response);
+        }
+      );
+      return info.promise;
+    };
+
+
+
+  })
   .controller('RewardsTabCtrl', function($scope, $stateParams, $cordovaSQLite) {
 
     $scope.rewards = [];

@@ -146,7 +146,13 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
         controller: 'MenuFoodTabCtrl'
       }
     }
-  });
+  }).state('init', {
+        url: "/init",
+        templateUrl: 'templates/init.html',
+        controller: 'InitCtrl'
+    //templateUrl: "templates/hometabs.html"
+  })
+  ;
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/onboarding');
+  $urlRouterProvider.otherwise('/init');
 });
